@@ -1,0 +1,93 @@
+﻿@model PagedList.IPagedList<webbanhang.Models.Hang>
+    @using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css"/>
+   
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br/>
+@using (Html.BeginForm())
+            {
+                <p>
+                    Tìm mặt hàng:@Html.TextBox("searchstring", ViewBag.CurrentFilter as string)
+                    <input type="submit" value="Tìm" />
+                </p>
+            }
+
+
+<p>
+    <button style="background-color:greenyellow"><a class="navbar-link" style="text-decoration:none" href="@Url.Action("Create","Hangs")">
+    + Thêm mới
+</a></button>
+   
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Tên nhà cung cấp
+        </th>
+        <th>
+            Tên hàng
+        </th>
+        <th>
+            Giá
+        </th>
+        <th>
+            Lượng có
+        </th>
+        <th>
+           Mô tả
+        </th>
+        <th>
+            Chiết khấu
+        </th>
+        <th>
+           Hình ảnh
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Nha_CC.TenNCC)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TenHang)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Gia)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LuongCo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MoTa)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ChietKhau)
+        </td>
+        <td>
+            @{
+                string imagepath= "~/wwwroot/images/"+item.HinhAnh;
+            }
+            <img src="@Url.Content(imagepath)" width="100" class="img-thumbnail"/>
+        </td>
+        <td>
+           
+            @Html.ActionLink("Sửa", "Edit", new { id = item.MaHang.Trim() }) |
+            @Html.ActionLink("Chi tiết", "Details", new { id = item.MaHang.Trim() }) |
+            @Html.ActionLink("Xóa", "Delete", new { id = item.MaHang.Trim() })
+        </td>
+    </tr>
+}
+
+</table>
+<br/>
+Trang @(Model.PageCount <Model.PageNumber ? 0 : Model.PageNumber)/@Model.PageCount
+@Html.PagedListPager(Model,page =>Url.Action("Index",
+    new {page,
+        currentFilter = ViewBag.CurrentFilter
+    }))
